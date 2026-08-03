@@ -1,11 +1,11 @@
-// Simple Linux AI response engine ported to JS
+// Simple cubesAI response engine ported to JS
 
 function getResponse(text){
   if(!text || !text.trim()) return "Say something about Linux, Arch, AUR, coding, or just chat in English.";
   const t = text.toLowerCase();
 
   if(/\b(hi|hello|hey|how are you|howdy|good morning|good afternoon|good evening|what's up|sup)\b/.test(t)){
-    return "Hello! I'm Linux AI. I speak English and I can help with Linux, AUR, programming, or just normal conversation.";
+    return "Hello! I'm cubesAI. I speak English and I can help with Linux, AUR, programming, or just normal conversation.";
   }
   if(/\b(thanks|thank you|thx|ty)\b/.test(t)){
     return "You're welcome! Ask me anything else about Linux, coding, or Arch Linux.";
@@ -89,4 +89,4 @@ form.addEventListener('submit', e=>{
 });
 
 // initial welcome
-addMessage('Hello — I am your Linux assistant. Ask about Linux, AUR, programming, or simply say hi.', 'bot');
+addMessage('Hello — I am cubesAI. Ask about Linux, AUR, programming, or simply say hi.', 'bot');
