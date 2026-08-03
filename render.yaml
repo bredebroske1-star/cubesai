@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: cubesai
+    name: linux
     env: docker
     branch: main
     dockerfilePath: Dockerfile
