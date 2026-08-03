@@ -1,0 +1,24 @@
+app = "archai-app-placeholder"
+
+[build]
+  # Use the image built by the GitHub workflow or build from the Dockerfile
+  image = "ghcr.io/OWNER/archai:latest"
+
+[env]
+  ALLOWED_ORIGINS = "https://archaiweb2026.loca.lt"
+
+[[services]]
+  internal_port = 8000
+  protocol = "tcp"
+
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls"]
+    port = 443

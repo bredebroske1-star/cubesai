@@ -1,0 +1,13 @@
+[Unit]
+Description=ArchAI Docker container
+After=network.target docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/deploy
+ExecStart=/usr/bin/docker run -d --name archai -p 127.0.0.1:8000:8000 --restart unless-stopped ghcr.io/your-org/archai:latest
+ExecStop=/usr/bin/docker rm -f archai || true
+
+[Install]
+WantedBy=multi-user.target

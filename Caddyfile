@@ -1,0 +1,11 @@
+# Replace `your.domain.tld` with your actual domain name. Caddy will obtain TLS certs automatically.
+your.domain.tld {
+    reverse_proxy 127.0.0.1:8000
+    encode zstd gzip
+    # Optional: enable access logs
+    log {
+        output file /var/log/caddy/access.log
+    }
+}
+
+# For local testing without DNS, you can use a hosts file entry pointing your.domain.tld to the server IP.

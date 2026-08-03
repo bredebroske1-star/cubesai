@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>cubesAI — encrypted chatbot</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="top-bar">
+      <div class="top-bar-inner">
+        <a class="top-link" href="#learn">test the newly produced assistance to help u learn cubesAI!</a>
+        <a class="chat-link" href="#chat">Launch Chat</a>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="hero-inner">
+        <img src="logo.svg" class="hero-logo" alt="cubesAI logo" />
+        <div class="brand-title"><span class="arch">cubes</span><span class="ai">AI</span></div>
+        <p class="hero-subtitle">Encrypted chatbot that you can trust. Minimal, lightweight, and privacy-minded assistance for Linux, AUR, and programming help.</p>
+        <div class="hero-line">
+          <span class="hero-line-blue"></span>
+          <span class="hero-line-white"></span>
+        </div>
+        <div class="hero-actions">
+          <a class="button primary" href="#chat">Chat Assistant</a>
+          <a class="button secondary" href="#learn">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="learn">
+    <section class="info-grid">
+      <article class="card">
+        <h2>cubesAI-inspired</h2>
+        <p>Clean typography, grey tones, and a simple overlapping cubes mark create a modern, professional AI brand experience.</p>
+      </article>
+      <article class="card">
+        <h2>Same-size title</h2>
+        <p>The text uses same-size styling for <strong>cubesAI</strong>, matching your requested brand identity.</p>
+      </article>
+      <article class="card">
+        <h2>Smooth navigation</h2>
+        <p>The top link and button scroll smoothly to the assistant section for a polished experience.</p>
+      </article>
+    </section>
+
+    <section class="chat-section" id="chat">
+      <div class="chat-header">
+        <div>
+          <h2>cubesAI Assistant</h2>
+          <p>The chat assistant is ready below. Use this section to get help with Linux, AUR, programming, or general questions.</p>
+        </div>
+      </div>
+      <div class="chat-panel">
+        <div class="messages" id="messages" aria-live="polite"></div>
+        <form id="inputForm" class="input-row" action="#">
+          <input id="messageInput" type="text" placeholder="Ask about Linux, pacman, AUR, or say hi" autocomplete="off" />
+          <button id="sendBtn" type="submit">Send</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>Made by Brede</div>
+      <div class="credits">cubesAI — encrypted and privacy-minded.</div>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
