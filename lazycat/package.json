@@ -1,7 +1,7 @@
 {
-  "name": "lazycat",
+  "name": "lazycat-browser",
   "version": "0.1.0",
-  "description": "LazyCat — minimalist secure browser with built-in blocking",
+  "description": "LazyCat Browser — minimalist secure browser with built-in blocking",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -19,7 +19,7 @@
   },
   "build": {
     "appId": "com.example.lazycat",
-    "productName": "LazyCat",
+    "productName": "LazyCat Browser",
     "files": [
       "**/*"
     ],

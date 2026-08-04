@@ -4,26 +4,45 @@
     <meta charset="utf-8" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.google.com; style-src 'self' 'unsafe-inline'">
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>LazyCat</title>
+    <title>LazyCat Browser</title>
     <style>
-      body{font-family:Inter,system-ui,Arial;margin:0}
-      header{display:flex;gap:8px;padding:8px;background:#111;color:#fff}
-      input[type=text]{flex:1;padding:8px;border-radius:6px;border:0}
-      button{padding:8px 12px;border-radius:6px;border:0}
-      iframe{width:100%;height:calc(100vh - 56px);border:0}
+      body{font-family:Inter,system-ui,Arial;margin:0;background:#f3f4f6}
+      header{display:flex;align-items:center;gap:8px;padding:10px;background:#f7f7f8;border-bottom:1px solid #e0e0e0}
+      .logo{display:flex;align-items:center;gap:8px}
+      .brand{font-weight:700;color:#222}
+      input[type=text]{flex:1;padding:10px;border-radius:6px;border:1px solid #d0d0d0;background:#fff}
+      button{padding:8px 12px;border-radius:6px;border:0;background:#2b6cb0;color:#fff}
+      iframe{width:100%;height:calc(100vh - 72px);border:0}
+      /* interactive cat */
+      .cat-btn{width:44px;height:44px;border-radius:8px;background:#fff;border:1px solid #e6e6e6;display:flex;align-items:center;justify-content:center;cursor:pointer}
+      .paw{width:22px;height:22px;transform-origin:center;transition:transform 120ms ease}
+      .paw.hit{transform:rotate(-30deg) translateY(-6px)}
+      .pulse{position:absolute;pointer-events:none;border-radius:6px;background:rgba(43,108,176,0.12);animation:pulse 420ms ease-out}
+      @keyframes pulse{from{opacity:1;transform:scale(0.3)}to{opacity:0;transform:scale(1.4)}}
     </style>
   </head>
   <body>
     <header>
-      <img src="../web/logo.svg" alt="cubesAI logo" style="width:36px;height:36px" />
-      <input id="addr" type="text" placeholder="Search Google or type URL" />
-      <button id="go">Go</button>
+      <div class="logo">
+        <img src="../web/logo.svg" alt="LazyCat Browser logo" style="width:48px;height:48px" />
+        <div class="brand">LazyCat Browser</div>
+      </div>
+      <div style="flex:1;display:flex;gap:8px;align-items:center;margin-left:8px">
+        <input id="addr" type="text" placeholder="Search Google or type URL" />
+        <button id="go">Go</button>
+        <div id="cat" class="cat-btn" title="Pet the cat">
+          <svg class="paw" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#8b6b59" d="M6 10c-.9 0-1.6.7-1.6 1.6S5.1 13.2 6 13.2 7.6 12.5 7.6 11.6 6.9 10 6 10zm5-6c-.8 0-1.4.6-1.4 1.4S10.2 8.8 11 8.8s1.4-.6 1.4-1.4S11.8 4 11 4zM18 8c-.6 0-1.1.5-1.1 1.1S17.4 10.2 18 10.2 19.1 9.7 19.1 9.1 18.6 8 18 8zM12 14c-.9 0-1.6.7-1.6 1.6S11.1 17.2 12 17.2 13.6 16.5 13.6 15.6 12.9 14 12 14z"/></svg>
+        </div>
+      </div>
     </header>
     <iframe id="view" src="https://www.google.com"></iframe>
     <script>
       const addr = document.getElementById('addr');
       const go = document.getElementById('go');
       const view = document.getElementById('view');
+      const cat = document.getElementById('cat');
+      const paw = cat.querySelector('.paw');
+
       go.addEventListener('click', ()=>{
         let v = addr.value.trim();
         if(!v) return;
@@ -31,6 +50,22 @@
         view.src = v;
       });
       addr.addEventListener('keydown', e=>{ if(e.key==='Enter') go.click(); });
+
+      // interactive paw hit
+      cat.addEventListener('click', ()=>{
+        paw.classList.add('hit');
+        // pulse effect
+        const rect = cat.getBoundingClientRect();
+        const pulse = document.createElement('div');
+        pulse.className = 'pulse';
+        pulse.style.width = '64px';
+        pulse.style.height = '36px';
+        pulse.style.left = (rect.left - 10) + 'px';
+        pulse.style.top = (rect.top + rect.height/2 - 18) + 'px';
+        document.body.appendChild(pulse);
+        setTimeout(()=>{ paw.classList.remove('hit'); }, 220);
+        setTimeout(()=>{ pulse.remove(); }, 520);
+      });
     </script>
   </body>
 </html>

@@ -7,6 +7,14 @@ Minimal, privacy-minded desktop browser built on Electron. Features:
 - Blocking of common ad/tracker domains
 - Uses Google search when a query is entered
 
+Description
+
+LazyCat Browser is a small, open-source, privacy-minded browser built for people who prefer a simple, slightly retro (circa 2018) browsing experience. It includes a built-in host blocklist for common ad and tracker domains, a minimal address bar that falls back to Google search for queries, and a playful interactive cat in the UI.
+
+Made by brede — open source, privacy-focused, with built-in ad blockers.
+
+The app is intentionally simple: it's meant to be a friendly, approachable browser for casual use and testing. For production use, review security settings and consider a larger blocklist.
+
 Run locally:
 
 ```bash
