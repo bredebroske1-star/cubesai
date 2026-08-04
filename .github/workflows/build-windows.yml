@@ -25,6 +25,14 @@ jobs:
         working-directory: lazycat
         run: npm run package-win
 
+      - name: Debug: list dist_electron
+        working-directory: lazycat
+        run: |
+          echo "Contents of lazycat/dist_electron:" 
+          dir dist_electron || ls -la dist_electron || true
+          echo "Files in lazycat:" 
+          dir || ls -la || true
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

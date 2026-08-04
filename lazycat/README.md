@@ -96,6 +96,23 @@ Generating a signed AAB in Android Studio:
 
 If you'd like, I can generate helper Gradle snippets and a sample Android `WebViewClient` blocking implementation to integrate the `blocklist.json` hosts into a native WebView, and prepare a script to produce an unsigned AAB that you can sign locally.
 
+Helper scripts and Android stub
+
+- `lazycat/scripts/make_keystore.sh` — generates a `lazycat.keystore` using `keytool`.
+- `lazycat/scripts/set_secrets.sh` — interactive helper to upload the keystore and signing secrets to GitHub using the `gh` CLI.
+- `lazycat/android_stub/signing-snippet.txt` — copy this snippet into `android/app/build.gradle` to enable signing.
+- `lazycat/android_stub/BlockingWebViewClient.java` — a small stub showing how to block hosts from `blocklist.json` in a native WebView.
+
+Run the keystore generator locally and then upload secrets:
+
+```bash
+cd lazycat
+./scripts/make_keystore.sh lazycat.keystore
+./scripts/set_secrets.sh lazycat.keystore
+```
+
+If you prefer not to use `gh` CLI, base64 the keystore and set `KEYSTORE_BASE64` in the GitHub repository Secrets manually.
+
 CI: automated build & Play upload
 
 If you want to automate building and uploading AABs via GitHub Actions, I added a workflow at `.github/workflows/android-upload.yml` that:

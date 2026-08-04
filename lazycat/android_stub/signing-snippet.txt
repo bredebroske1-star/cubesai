@@ -1,0 +1,21 @@
+// Add to android/app/build.gradle inside android { ... }
+signingConfigs {
+    release {
+        storeFile file('../lazycat.keystore')
+        storePassword project.hasProperty('KEYSTORE_PASSWORD') ? KEYSTORE_PASSWORD : ''
+        keyAlias project.hasProperty('KEY_ALIAS') ? KEY_ALIAS : ''
+        keyPassword project.hasProperty('KEY_PASSWORD') ? KEY_PASSWORD : ''
+    }
+}
+
+buildTypes {
+    release {
+        signingConfig signingConfigs.release
+        minifyEnabled false
+    }
+}
+
+// Put the following in android/gradle.properties or ~/.gradle/gradle.properties
+// KEYSTORE_PASSWORD=your_store_password
+// KEY_ALIAS=lazycat
+// KEY_PASSWORD=your_key_password

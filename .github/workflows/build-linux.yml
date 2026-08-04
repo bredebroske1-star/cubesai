@@ -24,6 +24,16 @@ jobs:
         working-directory: lazycat
         run: npm run package-all --silent || electron-builder --linux AppImage
 
+      - name: Debug: list build outputs
+        working-directory: lazycat
+        run: |
+          echo "Listing lazycat root:"
+          ls -la || true
+          echo "Listing dist_electron:"
+          ls -la dist_electron || true
+          echo "Find AppImage:"
+          find . -type f -name "*.AppImage" -print || true
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
