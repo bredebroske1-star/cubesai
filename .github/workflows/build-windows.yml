@@ -48,3 +48,9 @@ jobs:
             asset_name: LazyCat-Installer.exe
             asset_content_type: application/octet-stream
             token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload workflow artifact (installer)
+        uses: actions/upload-artifact@v3
+        with:
+          name: LazyCat-Installer
+          path: ${{ steps.find_installer.outputs.installer }}
