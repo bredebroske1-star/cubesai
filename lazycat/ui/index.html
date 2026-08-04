@@ -6,65 +6,274 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>LazyCat Browser</title>
     <style>
-      body{font-family:Inter,system-ui,Arial;margin:0;background:#f3f4f6}
-      header{display:flex;align-items:center;gap:8px;padding:10px;background:#f7f7f8;border-bottom:1px solid #e0e0e0}
-      .logo{display:flex;align-items:center;gap:8px}
-      .brand{font-weight:700;color:#222}
-      input[type=text]{flex:1;padding:10px;border-radius:6px;border:1px solid #d0d0d0;background:#fff}
-      button{padding:8px 12px;border-radius:6px;border:0;background:#2b6cb0;color:#fff}
-      iframe{width:100%;height:calc(100vh - 72px);border:0}
-      /* interactive cat */
-      .cat-btn{width:44px;height:44px;border-radius:8px;background:#fff;border:1px solid #e6e6e6;display:flex;align-items:center;justify-content:center;cursor:pointer}
-      .paw{width:22px;height:22px;transform-origin:center;transition:transform 120ms ease}
-      .paw.hit{transform:rotate(-30deg) translateY(-6px)}
-      .pulse{position:absolute;pointer-events:none;border-radius:6px;background:rgba(43,108,176,0.12);animation:pulse 420ms ease-out}
-      @keyframes pulse{from{opacity:1;transform:scale(0.3)}to{opacity:0;transform:scale(1.4)}}
+      :root {
+        color-scheme: dark;
+        --bg: #070b18;
+        --surface: rgba(16, 23, 46, 0.95);
+        --surface-strong: rgba(10, 15, 30, 0.96);
+        --surface-soft: rgba(47, 59, 92, 0.92);
+        --accent: #7dd3fc;
+        --accent-strong: #6b9cff;
+        --text: #eef2ff;
+        --muted: #9bb4d1;
+        --border: rgba(148, 176, 223, 0.14);
+      }
+
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: radial-gradient(circle at top, rgba(65, 174, 255, 0.12), transparent 28%), linear-gradient(180deg, #081022 0%, #0d1633 100%); color: var(--text); }
+      button, input { font: inherit; }
+      img { display: block; }
+
+      .topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 26px; backdrop-filter: blur(16px); background: rgba(4, 8, 20, 0.75); border-bottom: 1px solid rgba(148, 176, 223, 0.08); }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .brand-logo { width: 54px; height: 54px; border-radius: 18px; background: rgba(255,255,255,0.06); display: grid; place-items: center; }
+      .brand-title { display: flex; flex-direction: column; gap: 2px; }
+      .brand-title .name { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.04em; }
+      .brand-title .tagline { color: var(--muted); font-size: 0.9rem; }
+
+      .hero-shell { max-width: 1160px; margin: 0 auto; padding: 24px 26px 40px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; }
+      .hero { display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+      .hero h1 { margin: 0; font-size: clamp(3rem, 5vw, 5.4rem); line-height: 0.98; letter-spacing: -0.05em; }
+      .hero p { max-width: 620px; margin: 0; color: var(--muted); font-size: 1.05rem; line-height: 1.9; }
+
+      .search-panel { width: 100%; padding: 22px; border-radius: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(148,176,223,0.12); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18); }
+      .search-bar { display: flex; gap: 12px; margin-top: 16px; }
+      .search-field { flex: 1; min-width: 0; padding: 18px 20px; border-radius: 999px; border: 1px solid rgba(148,176,223,0.18); background: rgba(255,255,255,0.08); color: var(--text); outline: none; }
+      .search-field::placeholder { color: rgba(238,242,255,0.64); }
+      .search-actions { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+      .button-primary { display: inline-flex; align-items: center; justify-content: center; padding: 15px 20px; border-radius: 999px; border: none; background: linear-gradient(135deg, #6b9cff, #55d8fb); color: #fff; font-weight: 700; cursor: pointer; transition: transform 160ms ease, box-shadow 160ms ease; }
+      .button-primary:hover { transform: translateY(-1px); box-shadow: 0 18px 40px rgba(38, 80, 169, 0.25); }
+      .button-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 18px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); color: var(--text); cursor: pointer; }
+      .button-secondary:hover { background: rgba(255,255,255,0.12); }
+
+      .feature-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+      .feature-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(148,176,223,0.1); border-radius: 24px; padding: 18px 20px; min-height: 118px; display: flex; flex-direction: column; justify-content: space-between; }
+      .feature-card h3 { margin: 0 0 10px; font-size: 1rem; }
+      .feature-card p { margin: 0; color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+
+      .sidebar { display: flex; flex-direction: column; gap: 18px; }
+      .side-panel { background: rgba(255,255,255,0.06); border: 1px solid rgba(148,176,223,0.1); border-radius: 28px; padding: 22px; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; }
+      .side-panel h2 { margin: 0 0 10px; font-size: 1.05rem; }
+      .side-panel p { margin: 0; color: var(--muted); line-height: 1.75; }
+      .copilot-card { display: grid; gap: 16px; }
+      .copilot-status { display: flex; align-items: center; gap: 10px; font-size: 0.94rem; }
+      .copilot-dot { width: 10px; height: 10px; border-radius: 50%; background: #6bffc4; box-shadow: 0 0 12px rgba(107,255,196,0.45); }
+      .copilot-actions { display: grid; gap: 10px; margin-top: 16px; }
+      .copilot-actions button { width: 100%; border: none; border-radius: 16px; padding: 14px 18px; background: rgba(255,255,255,0.08); color: var(--text); cursor:pointer; text-align:left; }
+      .copilot-actions button:hover { background: rgba(255,255,255,0.14); }
+      .copilot-response { margin-top: 16px; padding: 16px; border-radius: 20px; background: rgba(255,255,255,0.06); border: 1px solid rgba(148,176,223,0.1); color: var(--text); min-height: 120px; }
+
+      .home-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(148,176,223,0.12); border-radius: 28px; padding: 22px; margin-top: 20px; }
+      .home-card h2 { margin: 0 0 8px; font-size: 1.1rem; }
+      .home-card p { margin: 0; color: var(--muted); line-height: 1.7; }
+      .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+      .quick-link { padding: 12px 16px; border-radius: 999px; background: rgba(255,255,255,0.08); color: var(--text); text-decoration: none; font-size: 0.95rem; transition: transform 160ms ease; }
+      .quick-link:hover { transform: translateY(-1px); background: rgba(255,255,255,0.12); }
+
+      .cat-area { position: relative; display: grid; place-items: center; padding: 22px; border-radius: 32px; background: rgba(255,255,255,0.08); border: 1px solid rgba(148,176,223,0.12); }
+      .cat-art { width: 100%; max-width: 360px; }
+      .cat-art .sleeping { opacity: 1; transition: opacity 180ms ease; }
+      .cat-art.awake .sleeping { opacity: 0; }
+      .cat-art .awake { opacity: 0; transform: translateY(10px); transition: opacity 180ms ease, transform 180ms ease; }
+      .cat-art.awake .awake { opacity: 1; transform: translateY(0); }
+      .cat-action { display: inline-flex; align-items:center; justify-content:center; gap:10px; margin-top: 18px; padding: 14px 20px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.08); color: var(--text); cursor:pointer; }
+      .cat-action:hover { background: rgba(255,255,255,0.14); }
+      .cat-bubble { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); padding: 14px 18px; border-radius: 24px; background: rgba(13, 20, 38, 0.95); border: 1px solid rgba(148,176,223,0.16); color: #dbe8ff; opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
+      .cat-bubble.show { opacity: 1; }
+
+      .iframe-shell { display: none; margin-top: 20px; border-radius: 28px; overflow: hidden; border: 1px solid rgba(148,176,223,0.12); background: var(--surface-strong); min-height: 74vh; }
+      .iframe-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; background: rgba(12, 18, 35, 0.95); border-bottom: 1px solid rgba(148,176,223,0.08); }
+      .iframe-header h2 { margin: 0; font-size: 1rem; }
+      .iframe-close { border: none; background: rgba(255,255,255,0.08); color: var(--text); border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+      iframe { width: 100%; height: calc(100vh - 190px); border: 0; }
+
+      @media (max-width: 1080px) {
+        .hero-shell { grid-template-columns: 1fr; padding: 18px; }
+        .sidebar { order: -1; }
+      }
+      @media (max-width: 760px) {
+        .topbar { flex-direction: column; align-items: stretch; padding: 16px; }
+        .brand-title .name { font-size: 1.05rem; }
+        .hero h1 { font-size: 3rem; }
+        .feature-grid { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
-    <header>
-      <div class="logo">
-        <img src="../web/logo.svg" alt="LazyCat Browser logo" style="width:48px;height:48px" />
-        <div class="brand">LazyCat Browser</div>
-      </div>
-      <div style="flex:1;display:flex;gap:8px;align-items:center;margin-left:8px">
-        <input id="addr" type="text" placeholder="Search Google or type URL" />
-        <button id="go">Go</button>
-        <div id="cat" class="cat-btn" title="Pet the cat">
-          <svg class="paw" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#8b6b59" d="M6 10c-.9 0-1.6.7-1.6 1.6S5.1 13.2 6 13.2 7.6 12.5 7.6 11.6 6.9 10 6 10zm5-6c-.8 0-1.4.6-1.4 1.4S10.2 8.8 11 8.8s1.4-.6 1.4-1.4S11.8 4 11 4zM18 8c-.6 0-1.1.5-1.1 1.1S17.4 10.2 18 10.2 19.1 9.7 19.1 9.1 18.6 8 18 8zM12 14c-.9 0-1.6.7-1.6 1.6S11.1 17.2 12 17.2 13.6 16.5 13.6 15.6 12.9 14 12 14z"/></svg>
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-logo"><img src="../web/logo.svg" alt="LazyCat Browser logo" style="width:38px;height:38px" /></div>
+        <div class="brand-title">
+          <span class="name">LazyCat Browser</span>
+          <span class="tagline">Modern, sleek, privacy-friendly browsing with CubesAI.</span>
         </div>
       </div>
-    </header>
-    <iframe id="view" src="https://www.google.com"></iframe>
+      <div class="copilot-status">
+        <span class="copilot-dot"></span>
+        <span>CubesAI Copilot ready to help.</span>
+      </div>
+    </div>
+
+    <div class="hero-shell">
+      <section class="hero">
+        <div class="logo-card">
+          <div class="cat-area">
+            <div class="cat-bubble" id="catBubble">Zzz... Tap to wake me.</div>
+            <div class="cat-art" id="catArt">
+              <svg viewBox="0 0 360 280" fill="none" xmlns="http://www.w3.org/2000/svg" class="sleeping">
+                <ellipse cx="180" cy="180" rx="152" ry="84" fill="rgba(255,255,255,0.08)"/>
+                <path d="M98 134c-4-10-6-22 0-34 8-18 28-26 42-34 16-9 34-17 52-18 18-1 36 4 53 8 14 3 25 10 36 18 16 12 30 28 35 47 6 21 0 44-18 58-14 10-31 18-48 20-20 2-40-1-60-2-19-1-41-6-54-21-9-10-13-24-16-37z" fill="#d3c6b3"/>
+                <path d="M68 128c-6 10-4 24 3 35 21 33 64 42 102 45 37 3 77-2 108-25 12-9 20-23 23-38 3-18 0-37-13-52-12-13-30-25-48-28-16-3-34-1-50 3-23 6-46 17-63 33-13 12-23 27-29 44-4 9-8 19-10 29z" fill="#f0e5d8"/>
+                <path d="M140 112c0-12 8-22 20-22s20 10 20 22" stroke="#5a4b40" stroke-width="10" stroke-linecap="round"/>
+                <path d="M190 122c0 6-5 10-10 10s-10-4-10-10" stroke="#5a4b40" stroke-width="8" stroke-linecap="round"/>
+                <path d="M130 146c10 8 30 8 40 0" stroke="#5a4b40" stroke-width="8" stroke-linecap="round"/>
+              </svg>
+              <svg viewBox="0 0 360 280" fill="none" xmlns="http://www.w3.org/2000/svg" class="awake">
+                <path d="M88 128c-6 11-5 25 3 36 22 33 68 40 106 44 38 4 76-2 104-25 12-10 20-23 23-38 3-19 0-39-15-55-12-14-31-25-49-29-17-4-36-1-54 3-24 7-47 19-64 34-14 12-25 28-30 46-4 9-8 19-10 29z" fill="#f4e7d9"/>
+                <path d="M138 110c0-12 8-22 20-22s20 10 20 22" stroke="#5a4b40" stroke-width="10" stroke-linecap="round"/>
+                <path d="M190 128c0 6-5 10-10 10s-10-4-10-10" stroke="#5a4b40" stroke-width="8" stroke-linecap="round"/>
+                <path d="M120 150c16 13 38 13 54 0" stroke="#5a4b40" stroke-width="8" stroke-linecap="round"/>
+                <path d="M250 78c-12-6-24-4-34 2" stroke="#5a4b40" stroke-width="12" stroke-linecap="round"/>
+                <path d="M82 80c10-8 22-10 34-8" stroke="#5a4b40" stroke-width="12" stroke-linecap="round"/>
+                <path d="M112 160c10 12 28 15 42 8" stroke="#5a4b40" stroke-width="10" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <button class="cat-action" id="wakeButton">Wake LazyCat</button>
+          </div>
+          <div class="home-card">
+            <h2>Welcome to your new home screen</h2>
+            <p>LazyCat Browser brings modern browsing, privacy blocking, and a friendly CubesAI copilot. Tap the cat to wake it up and meow for a fresh search experience.</p>
+            <div class="links">
+              <a class="quick-link" href="#" data-target="https://www.google.com">Google</a>
+              <a class="quick-link" href="#" data-target="https://www.youtube.com">YouTube</a>
+              <a class="quick-link" href="#" data-target="https://www.wikipedia.org">Wikipedia</a>
+              <a class="quick-link" href="#" data-target="https://news.google.com">News</a>
+            </div>
+          </div>
+        </div>
+        <div class="search-panel">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:72px;height:72px;border-radius:22px;background:rgba(255,255,255,0.05);display:grid;place-items:center;">
+              <span style="font-size:28px;">🐾</span>
+            </div>
+            <div>
+              <p style="margin:0;font-size:0.96rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;">Search the web faster</p>
+              <h2 style="margin:8px 0 0;font-size:1.5rem;">Type anything or paste a link.</h2>
+            </div>
+          </div>
+          <div class="search-bar">
+            <input id="addr" class="search-field" type="text" placeholder="Search Google or type a full URL" />
+            <div class="search-actions">
+              <button class="button-primary" id="go">Search</button>
+              <button class="button-secondary" id="homeBtn">Home</button>
+            </div>
+          </div>
+          <div class="feature-grid">
+            <div class="feature-card"><h3>Privacy blocking</h3><p>Built in ad and tracker blocking keep your browsing clean and fast without extra clutter.</p></div>
+            <div class="feature-card"><h3>CubesAI Copilot</h3><p>Your side assistant offers quick suggestions, shortcuts, and browsing tips right from the home screen.</p></div>
+            <div class="feature-card"><h3>Fast search</h3><p>Query directly or enter a URL and LazyCat will take you there with a modern browser feel.</p></div>
+            <div class="feature-card"><h3>Beautiful design</h3><p>Modern 2026 styling with glassy cards, animated cat interactions, and a sleek dark theme.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="side-panel">
+          <h2>CubesAI Copilot</h2>
+          <p>LazyCat's AI assistant sits on the side and helps you browse smarter. Ask for quick search ideas, privacy tips, or shortcuts to useful pages.</p>
+          <div class="copilot-actions">
+            <button id="suggestBtn">Give me a suggestion</button>
+            <button id="focusBtn">Show privacy tips</button>
+          </div>
+          <div class="copilot-response" id="copilotResponse">CubesAI is ready. Tap a button to get a helpful suggestion or a privacy reminder.</div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="iframe-shell" id="iframeShell">
+      <div class="iframe-header">
+        <h2>LazyCat Result</h2>
+        <button class="iframe-close" id="closeIframe">Back to Home</button>
+      </div>
+      <iframe id="view" src="https://www.google.com"></iframe>
+    </div>
+
     <script>
-      const addr = document.getElementById('addr');
-      const go = document.getElementById('go');
-      const view = document.getElementById('view');
-      const cat = document.getElementById('cat');
-      const paw = cat.querySelector('.paw');
+      const addr = document.querySelector('#addr');
+      const go = document.querySelector('#go');
+      const homeBtn = document.querySelector('#homeBtn');
+      const view = document.querySelector('#view');
+      const iframeShell = document.getElementById('iframeShell');
+      const catArt = document.getElementById('catArt');
+      const wakeButton = document.getElementById('wakeButton');
+      const catBubble = document.getElementById('catBubble');
+      const quickLinks = document.querySelectorAll('.quick-link');
+      const suggestBtn = document.getElementById('suggestBtn');
+      const focusBtn = document.getElementById('focusBtn');
+      const copilotResponse = document.getElementById('copilotResponse');
+      const closeIframe = document.getElementById('closeIframe');
+      let awake = false;
 
-      go.addEventListener('click', ()=>{
-        let v = addr.value.trim();
-        if(!v) return;
-        if(!/^https?:\/\//.test(v)) v = 'https://www.google.com/search?q='+encodeURIComponent(v);
-        view.src = v;
+      const suggestions = [
+        'Try searching for the latest privacy browser tips.',
+        'Look up quick Linux productivity shortcuts.',
+        'Search for the best open-source software in 2026.',
+        'Find a fast tracker blocker extension for your browser.',
+      ];
+      const privacyTips = [
+        'Use private windows for sensitive searches.',
+        'Avoid sites that request too much personal data.',
+        'Install only trusted extensions and keep them updated.',
+        'Enable tracker blocking and clear cookies regularly.',
+      ];
+
+      function toggleCat() {
+        awake = !awake;
+        catArt.classList.toggle('awake', awake);
+        catBubble.textContent = awake ? 'Meow! Ready to browse.' : 'Zzz... Tap to wake me.';
+        catBubble.classList.add('show');
+        setTimeout(() => catBubble.classList.remove('show'), 1800);
+      }
+
+      function showHome() {
+        iframeShell.style.display = 'none';
+      }
+
+      function doSearch(query) {
+        if (!query) return;
+        let url = query.trim();
+        if (!/^https?:\/\//.test(url)) {
+          url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+        }
+        view.src = url;
+        iframeShell.style.display = 'block';
+      }
+
+      go.addEventListener('click', () => doSearch(addr.value));
+      homeBtn.addEventListener('click', () => { showHome(); addr.value = ''; });
+      closeIframe.addEventListener('click', showHome);
+      wakeButton.addEventListener('click', toggleCat);
+
+      quickLinks.forEach(link => {
+        link.addEventListener('click', event => {
+          event.preventDefault();
+          doSearch(event.currentTarget.dataset.target);
+        });
       });
-      addr.addEventListener('keydown', e=>{ if(e.key==='Enter') go.click(); });
 
-      // interactive paw hit
-      cat.addEventListener('click', ()=>{
-        paw.classList.add('hit');
-        // pulse effect
-        const rect = cat.getBoundingClientRect();
-        const pulse = document.createElement('div');
-        pulse.className = 'pulse';
-        pulse.style.width = '64px';
-        pulse.style.height = '36px';
-        pulse.style.left = (rect.left - 10) + 'px';
-        pulse.style.top = (rect.top + rect.height/2 - 18) + 'px';
-        document.body.appendChild(pulse);
-        setTimeout(()=>{ paw.classList.remove('hit'); }, 220);
-        setTimeout(()=>{ pulse.remove(); }, 520);
+      suggestBtn.addEventListener('click', () => {
+        const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+        copilotResponse.textContent = 'CubesAI suggests: ' + suggestion;
+      });
+      focusBtn.addEventListener('click', () => {
+        const tip = privacyTips[Math.floor(Math.random() * privacyTips.length)];
+        copilotResponse.textContent = 'Privacy tip: ' + tip;
+      });
+
+      addr.addEventListener('keydown', e => { if (e.key === 'Enter') go.click(); });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        showHome();
       });
     </script>
   </body>
