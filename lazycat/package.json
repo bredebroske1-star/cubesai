@@ -6,11 +6,30 @@
   "scripts": {
     "start": "electron .",
     "build-web": "mkdir -p dist && cp -r ui/* dist/",
-    "prepare-android": "echo 'Run capacitor init in lazycat/dist and copy files to Android project'"
+    "dist": "npm run build-web",
+    "package-win": "electron-builder --win nsis",
+    "package-all": "electron-builder",
+    "prepare-android": "npm run build-web && echo 'See README for Capacitor steps'"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^26.0.0"
+    "electron": "^26.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": {
+    "appId": "com.example.lazycat",
+    "productName": "LazyCat",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "output": "dist_electron"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
   }
 }
