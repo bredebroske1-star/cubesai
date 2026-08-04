@@ -29,15 +29,22 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: "windows-build-${{ github.run_id }}"
-          release_name: "Windows build ${{ github.run_id }}"
-          draft: false
-          prerelease: false
+            token: ${{ secrets.GITHUB_TOKEN }}
+            tag_name: "windows-build-${{ github.run_id }}"
+            release_name: "Windows build ${{ github.run_id }}"
+            draft: false
+            prerelease: false
+
+        - name: Find installer
+          id: find_installer
+          run: |
+            pwsh -c "$exe = Get-ChildItem -Path lazycat/dist_electron -Filter *.exe | Select-Object -First 1; echo "installer=$($exe.FullName)" >> $env:GITHUB_OUTPUT"
 
       - name: Upload installer
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: lazycat/dist_electron/*.exe
-          asset_name: LazyCat-Installer.exe
-          asset_content_type: application/octet-stream
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: ${{ steps.find_installer.outputs.installer }}
+            asset_name: LazyCat-Installer.exe
+            asset_content_type: application/octet-stream
+            token: ${{ secrets.GITHUB_TOKEN }}
