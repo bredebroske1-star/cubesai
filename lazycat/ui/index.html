@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://www.google.com; style-src 'self' 'unsafe-inline'">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LazyCat</title>
+    <style>
+      body{font-family:Inter,system-ui,Arial;margin:0}
+      header{display:flex;gap:8px;padding:8px;background:#111;color:#fff}
+      input[type=text]{flex:1;padding:8px;border-radius:6px;border:0}
+      button{padding:8px 12px;border-radius:6px;border:0}
+      iframe{width:100%;height:calc(100vh - 56px);border:0}
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="../web/logo.svg" alt="cubesAI logo" style="width:36px;height:36px" />
+      <input id="addr" type="text" placeholder="Search Google or type URL" />
+      <button id="go">Go</button>
+    </header>
+    <iframe id="view" src="https://www.google.com"></iframe>
+    <script>
+      const addr = document.getElementById('addr');
+      const go = document.getElementById('go');
+      const view = document.getElementById('view');
+      go.addEventListener('click', ()=>{
+        let v = addr.value.trim();
+        if(!v) return;
+        if(!/^https?:\/\//.test(v)) v = 'https://www.google.com/search?q='+encodeURIComponent(v);
+        view.src = v;
+      });
+      addr.addEventListener('keydown', e=>{ if(e.key==='Enter') go.click(); });
+    </script>
+  </body>
+</html>

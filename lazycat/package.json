@@ -1,0 +1,16 @@
+{
+  "name": "lazycat",
+  "version": "0.1.0",
+  "description": "LazyCat — minimalist secure browser with built-in blocking",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build-web": "mkdir -p dist && cp -r ui/* dist/",
+    "prepare-android": "echo 'Run capacitor init in lazycat/dist and copy files to Android project'"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^26.0.0"
+  }
+}
