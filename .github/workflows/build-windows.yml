@@ -18,9 +18,11 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
+        working-directory: lazycat
         run: npm install
 
       - name: Build Windows installer
+        working-directory: lazycat
         run: npm run package-win
 
       - name: Create Release
@@ -36,6 +38,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist_electron/*.exe
+          asset_path: lazycat/dist_electron/*.exe
           asset_name: LazyCat-Installer.exe
           asset_content_type: application/octet-stream
