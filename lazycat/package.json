@@ -31,5 +31,9 @@
         "nsis"
       ]
     }
+    ,
+    "linux": {
+      "target": ["AppImage"]
+    }
   }
 }

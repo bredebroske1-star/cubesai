@@ -1,0 +1,50 @@
+name: Build Linux AppImage
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: lazycat
+        run: npm install
+
+      - name: Build Linux AppImage
+        working-directory: lazycat
+        run: npm run package-all --silent || electron-builder --linux AppImage
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: "linux-build-${{ github.run_id }}"
+          release_name: "Linux build ${{ github.run_id }}"
+          draft: false
+          prerelease: false
+
+      - name: Find AppImage
+        id: find_appimage
+        run: |
+          FILE=$(find lazycat -type f -name "*.AppImage" | head -n 1)
+          echo "appimage=$FILE" >> $GITHUB_OUTPUT
+
+      - name: Upload AppImage
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_appimage.outputs.appimage }}
+          asset_name: LazyCat.AppImage
+          asset_content_type: application/octet-stream
+          token: ${{ secrets.GITHUB_TOKEN }}
